@@ -1,0 +1,99 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+
+class Transaksi {
+public:
+    string jenis;  
+    string deskripsi;
+    double jumlah;
+
+    Transaksi(string j, string d, double jml) : jenis(j), deskripsi(d), jumlah(jml) {}
+};
+
+class LaporanKeuangan {
+private:
+    vector<Transaksi> transaksiList;
+
+public:
+    void tambahTransaksi(string jenis, string deskripsi, double jumlah) {
+        Transaksi transaksi(jenis, deskripsi, jumlah);
+        transaksiList.push_back(transaksi);
+    }
+
+    void tampilkanLaporan() {
+        double totalPendapatan = 0, totalPengeluaran = 0;
+
+        cout << "\nLaporan Keuangan Pabrik\n";
+        cout << "-------------------------------------------------\n";
+        cout << left << setw(20) << "Jenis" << setw(30) << "Deskripsi" << setw(15) << "Jumlah\n";
+        cout << "-------------------------------------------------\n";
+
+        for (auto &transaksi : transaksiList) {
+            cout << left << setw(20) << transaksi.jenis 
+                 << setw(30) << transaksi.deskripsi 
+                 << setw(15) << fixed << setprecision(2) << transaksi.jumlah << "\n";
+
+            if (transaksi.jenis == "Pendapatan") {
+                totalPendapatan += transaksi.jumlah;
+            } else if (transaksi.jenis == "Pengeluaran") {
+                totalPengeluaran += transaksi.jumlah;
+            }
+        }
+
+        cout << "-------------------------------------------------\n";
+        cout << "Total Pendapatan: " << fixed << setprecision(2) << totalPendapatan << "\n";
+        cout << "Total Pengeluaran: " << fixed << setprecision(2) << totalPengeluaran << "\n";
+        cout << "-------------------------------------------------\n";
+        cout << "Laba Bersih: " << fixed << setprecision(2) << (totalPendapatan - totalPengeluaran) << "\n";
+    }
+};
+
+int main() {
+    LaporanKeuangan laporan;
+
+    int pilihan;
+    do {
+        cout << "\nSistem Pencatatan Keuangan Pabrik\n";
+        cout << "1. Tambah Transaksi Pendapatan\n";
+        cout << "2. Tambah Transaksi Pengeluaran\n";
+        cout << "3. Tampilkan Laporan Keuangan\n";
+        cout << "4. Keluar\n";
+        cout << "Pilih menu: ";
+        cin >> pilihan;
+
+        string deskripsi;
+        double jumlah;
+
+        switch (pilihan) {
+            case 1:
+                cout << "Masukkan nama pendapatan: ";
+                cin.ignore(); // membersihkan newline
+                getline(cin, deskripsi);
+                cout << "Masukkan jumlah pendapatan: ";
+                cin >> jumlah;
+                laporan.tambahTransaksi("Pendapatan", deskripsi, jumlah);
+                break;
+            case 2:
+                cout << "Masukkan nama pengeluaran: ";
+                cin.ignore(); // membersihkan newline
+                getline(cin, deskripsi);
+                cout << "Masukkan jumlah pengeluaran: ";
+                cin >> jumlah;
+                laporan.tambahTransaksi("Pengeluaran", deskripsi, jumlah);
+                break;
+            case 3:
+                laporan.tampilkanLaporan();
+                break;
+            case 4:
+                cout << "Terima kasih! Program selesai.\n";
+                break;
+            default:
+                cout << "Pilihan tidak valid. Coba lagi.\n";
+        }
+    } while (pilihan != 4);
+
+    return 0;
+}
